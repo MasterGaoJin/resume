@@ -13,7 +13,7 @@
 - 游戏网站切页  
 [github地址](https://github.com/MasterGaoJin/resume/tree/master/Stations%20semblable)  
 [查看demo](https://mastergaojin.github.io/resume/Stations%20semblable/pcgame.html)  
-1.使用div+css布局,jQuery实现代码逻辑，里面使用的轮播和回到顶部插件均为自己用面向对象模式进行封装  
+1.使用div+css布局,jQuery实现代码逻辑，里面使用的轮播和回到顶部插件均为自己用面向对象模式进行封装  
 2.requireJS 作为模块化工具，,使用 r.js 作为js打包工具。
 - 简单待办事件应用  
 [github地址](https://github.com/MasterGaoJin/resume/tree/master/todolist)  
