@@ -1,0 +1,167 @@
+   * {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    
+    body {
+      background-color: #58B7FF;
+      font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    }
+    
+    .clearfix:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    
+    #signInAndSignUp {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.4);
+      border: 1px solid #fff;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px;
+      width: 300px;
+      text-align: center;
+      margin: 0 auto;
+    }
+    
+    #signInAndSignUp .formRow input {
+      width: 200px;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+    
+    #signInAndSignUp .formActions input {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #13CE66;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+      color: #fff;
+    }
+    
+    #todo {
+      text-align: center;
+      font-family: PingFang SC;
+    }
+     #todo img{
+       width: 100px;
+       height: 100px;
+       border-radius: 50%;
+       margin-bottom: 30px;
+     }
+    #todo .user {
+      padding: 10px;
+      background-color: #fff;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+   
+    #todo .user button {
+      padding: 8px;
+      border: 1px solid #F7BA2A;
+      border-radius: 4px;
+      margin-left: 20px;
+      background-color: #F7BA2A;
+      cursor: pointer;
+      color: #fff;
+    }
+    
+    #todo .user button:hover {
+      opacity: 0.6;
+    }
+    
+    .newTask input {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #fff;
+      width: 400px;
+      margin-bottom: 30px;
+    }
+    
+    .todos-ct {
+      text-align: left;
+      width: 900px;
+      margin: 0 auto;
+    }
+    
+    .todos li {
+      padding: 3px;
+      margin-bottom: 20px;
+      line-height: 35px;
+      border: 1px solid transparent;
+      font-weight: bold;
+    }
+    
+    .todos li:hover {
+      background-color: #fff;
+      border: 1px solid #fff;
+      border-radius: 5px;
+    }
+    
+    input[type=checkbox] {
+      position: relative;
+      left: -20px;
+      visibility: hidden;
+    }
+    
+    .checkbox {
+      float: left;
+      margin-right: 10px;
+      width: 30px;
+      height: 10px;
+      background: #555;
+      position: relative;
+      border-radius: 3px;
+      margin-top: 12px;
+    }
+    
+    .checkbox label {
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      -webkit-transition: all .5s ease;
+      -moz-transition: all .5s ease;
+      -o-transition: all .5s ease;
+      -ms-transition: all .5s ease;
+      transition: all .5s ease;
+      cursor: pointer;
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      background: #ccc;
+    }
+    
+    .checkbox input[type=checkbox]:checked+label {
+      left: 20px;
+    }
+    .todos .btn {
+      padding: 8px;
+      border: 1px solid #FF4949;
+      border-radius: 4px;
+      background-color: #FF4949;
+      cursor: pointer;
+      color: #fff;
+      float: right;
+    }
+    
+    .todos .btn:hover {
+      opacity: 0.6;
+    }
+    
+    .todos span {
+      float: right;
+      margin-right: 15px;
+      font-weight: normal;
+    }

@@ -1,0 +1,61 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./css/todolist.css">
+</head>
+
+<body>
+  <div id="app">
+    <section id="signInAndSignUp" v-if="!currentUser">
+      <div class="select">
+        <label><input type="radio" name="type" value='signUp' v-model="actionType">注册</label>
+        <label><input type="radio" name="type" value='login' v-model="actionType">登入</label>
+      </div>
+      <div class="signUp" v-if="actionType=='signUp'">
+        <form @submit.prevent="signUp">
+          <div class="formRow"><input type="text" v-model="formData.username" placeholder="请输入用户名"></div>
+          <div class="formRow"><input type="password" v-model="formData.password" placeholder="请输入密码"></div>
+          <div class="formActions"><input type="submit" value="Sign Up"></div>
+        </form>
+      </div>
+      <div class="login" v-if="actionType=='login'">
+        <form @submit.prevent="login">
+          <div class="formRow"><input type="text" v-model="formData.username" placeholder="请输入用户名"></div>
+          <div class="formRow"><input type="password" v-model="formData.password" placeholder="请输入密码"></div>
+          <div class="formActions"><input type="submit" value="Login"></div>
+        </form>
+      </div>
+    </section>
+    <section id="todo" v-if="currentUser">
+      <div class="user">
+        <span>{{currentUser.username}} 欢迎您登入</span>
+        <button @click="logout">退出登录</button>
+      </div>
+      <img src="./photo/todolist.jpg">
+      <div class="newTask">
+        <input type="text" v-model="newTodo" @keypress.enter='addTodo' placeholder="请输入待办事项,按回车键结束">
+      </div>
+      <div class="todos-ct">
+        <ul class="todos">
+          <li class='clearfix' v-for="todo in todoList">
+            <div class="checkbox">
+              <input type="checkbox" v-model="todo.done">
+              <label @click="clickCheckbox(todo)"></label>
+            </div> 
+            <strong>{{todo.title}}</strong>
+            <button class='btn' @click="removeTodo(todo)">删除</button>
+            <span v-if='todo.done'>已完成</span>
+            <span v-else>未完成</span>
+            <span>创建时间：{{todo.createdAt}}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="bundle.js"></script>
+</body>
+
+</html>
