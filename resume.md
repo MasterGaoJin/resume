@@ -5,12 +5,15 @@
 年纪：24  
 微信：kelin-  
 邮箱：330879487@qq.com  
-手机：13288754351  
+手机：13288754351  
 英语水平：CET-4
 ## 教育经历
 广东药科大学  本科  计算机科学与技术 2012.9-2016.6
 ## 项目经历
-
+- 网站切页  
+[github地址](https://github.com/MasterGaoJin/resume/tree/master/Stations%20semblable)  
+[查看demo](https://mastergaojin.github.io/resume/Stations%20semblable/pcgame.html)  
+使用 requireJS 作为模块化工具，里面使用的轮播和回到顶部均为自己封装,使用 r.js 作为js打包工具。
 ## 掌握技能
 - 熟悉HTML(5)/CSS(3)，掌握浮动、定位、盒模型、BFC 等CSS核心概念，掌握常见布局方式，对代码可读性、规范性、语义化有一定认识，对CSS 兼容有一定经验，能熟练开发符合W3C规范的常见页面。
 - 熟悉原生JavaScript的使用，掌握事件模型、DOM 操作、Ajax、JSONP、跨域、闭包、原型链、继承等相关概念的原理和使用方法
