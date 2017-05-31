@@ -11,15 +11,17 @@
 广东药科大学  本科  计算机科学与技术 2012.9-2016.6
 ## 项目经历
 - 游戏网站切页  
+项目简述：通过用掌握的HTML.CSS和jQuery制作了一个自己喜欢的游戏主题的主页  
 [github地址](https://github.com/MasterGaoJin/resume/tree/master/Stations%20semblable)  
 [查看demo](https://mastergaojin.github.io/resume/Stations%20semblable/pcgame.html)  
 1.使用div+css布局,jQuery实现代码逻辑，里面使用的轮播和回到顶部插件均为自己用面向对象模式进行封装  
 2.requireJS 作为模块化工具，,使用 r.js 作为js打包工具。
 - 简单待办事件应用  
+项目简述：通过使用vue.框架对表单进行数据绑定来实现应用  
 [github地址](https://github.com/MasterGaoJin/resume/tree/master/todolist)  
 [查看demo](https://mastergaojin.github.io/resume/todolist/page.html)  
 1.使用了vue2.0框架进行开发，使用了LeanCloud作为后端支持，包括用户数据存储和展示  
-2.使用了webpack进行打包  
+2.使用了webpack进行打包  
 第一次打开demo的时候由于网速会出现错乱，稍等一下就可以正常显示  
 遇到的问题：  
 1.以项目作为驱动学习vue，对双向绑定理解还不是特别透彻，导致了用label标签for属性的时候出现了bug，经过调试发现原因并解决了bug  
