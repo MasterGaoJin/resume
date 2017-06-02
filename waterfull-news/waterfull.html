@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
+<style>
+  ul,
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .news-list {
+    width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .news-ct {
+    position: relative;
+  }
+  
+  .clearfix:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  
+  .item {
+    width: 280px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 10px;
+    position: absolute;
+  }
+  
+  .item img {
+    width: 100%;
+  }
+  
+  .item h4 {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .item p {
+    font-size: 13px;
+    line-height: 20px;
+    color: #777371;
+  }
+  .get-auto{
+    visibility: hidden;
+  }
+</style>
+
+<body>
+  <div class="news-list">
+    <ul class="news-ct clearfix">
+      <li class="item">
+        <a href="http://slide.tech.sina.com.cn/d/slide_5_453_77209.html/d/2" class="link"><img src="http://n.sinaimg.cn/tech/transform/20170415/V7WQ-fyeimqc3879157.jpg" alt=""></a>
+        <h4>福岛核禁区建筑街道空无人烟</h4>
+        <p>这使灾难过后的城市看起来如“空城”一般。</p>
+      </li>
+    </ul>
+  </div>
+  <div class="get-auto">隐形懒加载</div>
+  <script>
+    //获取数据
+    //拼装
+    //瀑布留展示
+    var newsNumber = 10;
+    var newsPage = 1;
+    var nodeWidth = $(".item").outerWidth(true);
+    var col = parseInt($(".news-list").width() / nodeWidth);
+    var colSumHeight = [];
+    for (var i = 0; i < col; i++) {
+      colSumHeight[i] = 0;
+    }
+    var isDataArrive=true;
+    start()
+    $(window).on("scroll", function () {
+      if(!isDataArrive){
+        return
+      }
+      if (isVisible($(".get-auto"))) {
+        start();
+      }
+    })
+
+    function start() {
+      getData(function (newsList) {
+        $.each(newsList, function (idx, news) {
+          var $node = renderData(news)
+          $node.find("img").load(function () {
+            $(".news-ct").append($node)
+            waterFull($node);
+          })
+        })
+      })
+      isDataArrive=false;
+    }
+
+    function getData(callback) {
+      $.ajax({
+        type: "get",
+        url: "http://platform.sina.com.cn/slide/album_tech",
+        data: {
+          app_key: "1271687855",
+          num: newsNumber,
+          page: newsPage
+        },
+        dataType: "jsonp",
+        jsonp: 'jsoncallback',
+        success: function (ret) {
+          if (ret && ret.status && ret.status.code === "0") {
+            callback(ret.data);
+            newsPage++;
+            isDataArrive=true;
+          }
+        },
+        error: function () {
+          console.log("系统出错");
+        }
+      })
+    }
+    function renderData(item) {
+      var tpl = "";
+      tpl += '<li class="item">'
+        + '<a href="' + item.url + '" class="link"><img src="' + item.img_url + '" alt=""></a>'
+        + '<h4>' + item.short_name + '</h4>'
+        + '<p>' + item.short_intro + '</p>'
+        + '</li>';
+      return $(tpl);
+    }
+
+    function isVisible($element) {
+      var $scollTop = $(window).scrollTop();
+      var $height = $(window).height();
+      var $top = $element.offset().top;
+      if ($height + $scollTop > $top) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function waterFull($node) {
+      var index = 0;
+      var minSumHeihgt = colSumHeight[0];
+      for (var i = 0; i < colSumHeight.length; i++) {
+        if (colSumHeight[i] < minSumHeihgt) {
+          index = i;
+          minSumHeihgt = colSumHeight[i];
+        }
+
+      }
+
+      $node.css({
+        left: nodeWidth * index,
+        top: minSumHeihgt,
+        opacity: 1
+      })
+
+      colSumHeight[index] += $node.outerHeight(true);
+      console.log(index);
+      console.log(colSumHeight[index]);
+      $node.parent().height(Math.max.apply(null,colSumHeight));
+    }
+  </script>
+</body>
+
+</html>
