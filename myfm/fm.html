@@ -197,7 +197,8 @@
       var newpicture = data.song[0].picture;
       var newauthor = data.song[0].artist;
       var newurl = data.song[0].url;
-      lrcUrl = data.song[0].lrc;
+      lrcUrl = data.song[0].sid;
+      console.log(lrcUrl);
       title.text(newtitle);
       author.text(newauthor);
       picture.attr("src", newpicture);
@@ -230,24 +231,31 @@
     function getLrc(lrcUrl) {
       $.ajax({
         type: "GET",
-        url: lrcUrl
+        url: 'https://jirenguapi.applinzi.com/fm/getLyric.php',
+        data:{
+          sid:lrcUrl
+        }
       }).done(function (ret) {
-        renderLrcData(ret);
+        renderLrcData(JSON.parse(ret).lyric);
         btnLock = true;
       });
     }
     function renderLrcData(text) {
-      var lines = text.split('\n');//将文本分隔成一行一行，存入数组    
-      pattern = /\[\d{2}:\d{2}.\d{2}\]/g////用于匹配时间的正则表达式，匹配的结果类似[xx:xx.xx]    
-      result = [];//保存最终结果的数组   
-      while (!pattern.test(lines[0])) {//去掉不含时间的行    
-        lines = lines.slice(1);
-      };
-      lines[lines.length - 1].length === 0 && lines.pop();    //上面用'\n'生成生成数组时，结果中最后一个为空元素，这里将去掉
-      lines.forEach(function (v /*数组元素值*/, i /*元素索引*/, a /*数组本身*/) {
+      var lines = text.split('\n');//将文本分隔成一行一行，存入数组   
+      var pattern = /\[\d{2}:\d{2}.\d{2}\]/;////用于匹配时间的正则表达式，匹配的结果类似[xx:xx.xx]    
+      var result = [];//保存最终结果的数组
+      var newLines=[];
+      for(var i=0;i<lines.length;i++){
+        if(pattern.test(lines[i])){
+          newLines.push(lines[i]);
+        }
+      }//对歌词进行过滤   
+      newLines.shift();  
+      newLines.forEach(function (v /*数组元素值*/, i /*元素索引*/, a /*数组本身*/) {
       var time = v.match(pattern);  //提取出时间[xx:xx.xx]  
-      var value = v.replace(pattern, '');  //提取歌词    
-        //因为一行里面可能有多个时间，所以time有可能是[xx:xx.xx][xx:xx.xx][xx:xx.xx]的形式，需要进一步分隔    
+      var value = v.replace(pattern, '');  //提取歌词   
+      
+      //因为一行里面可能有多个时间，所以time有可能是[xx:xx.xx][xx:xx.xx][xx:xx.xx]的形式，需要进一步分隔    
       time.forEach(function (v1, i1, a1) {
           //去掉时间里的中括号得到xx:xx.xx    
         var t = v1.slice(1, -1).split(':');
@@ -259,8 +267,7 @@
       result.sort(function (a, b) {
         return a[0] - b[0];
       });
-      console.log(result);
-      showLrcData(result);
+      showLrcData(result);//展示歌词
     }
     function showLrcData(arr){
         for (var i = 0, li; i < arr.length; i++) {
