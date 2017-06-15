@@ -19,7 +19,9 @@
     <div class="lyricsbox">
       <div class="title"></div>
       <div class="author"></div>
-      <div class="lyrics">As a child you would wait and watch from far wawy</div>
+      <div class="lyrics">
+        <ul class="lrc-list"></ul>
+      </div>
     </div>
     <div class="controlbox">
       <div class="progress">
@@ -89,6 +91,7 @@
       nowChannelId = channelId;
       console.log(nowChannelId);
       e.stopPropagation();
+      $('.lrc-list').empty();
       getMusic(channelId);
       playSong();
     })
@@ -108,6 +111,7 @@
         return;
       }
       btnLock = false;
+      $('.lrc-list').empty();//清空歌词
       getMusic(nowChannelId);
       playSong();
     })
@@ -116,6 +120,7 @@
         return;
       }
       btnLock = false;
+      $('.lrc-list').empty();
       getMusic(nowChannelId);
       playSong();
     })
@@ -149,8 +154,9 @@
       clearInterval(timer)
     }
     music.onended = function () {//歌曲结束后重新获取新歌曲
+      $('.lrc-list').empty();
       getMusic(nowChannelId);
-      playSong();
+      playSong();     
     }
 
     function getMusicList() {
@@ -184,7 +190,6 @@
       }).done(function (ret) {
         renderSongData(JSON.parse(ret));
         getLrc(lrcUrl);
-        btnLock = true;
       });
     }
     function renderSongData(data) {
@@ -228,6 +233,7 @@
         url: lrcUrl
       }).done(function (ret) {
         renderLrcData(ret);
+        btnLock = true;
       });
     }
     function renderLrcData(text) {
@@ -253,9 +259,27 @@
       result.sort(function (a, b) {
         return a[0] - b[0];
       });
-      console.log(result.join("\n"));
-      lrc.text(result.join("\n"));
-      return result;
+      console.log(result);
+      showLrcData(result);
+    }
+    function showLrcData(arr){
+        for (var i = 0, li; i < arr.length; i++) {
+          li = $('<li>' + arr[i][1] + '</li>');
+          $('.lrc-list').append(li);
+          $('.lrc-list li').hide();
+        }
+        music.ontimeupdate = function () {//视屏 音频当前的播放位置发生改变时触发    
+          for (var i = 0, l = arr.length; i < l; i++) {
+            if (this.currentTime /*当前播放的时间*/ > arr[i][0]) { //显示到页面    
+              $('.lrc-list li').hide();
+              $('.lrc-list li').eq(i).show()
+              $('.lrc-list li').eq(i+1).show()
+              $('.lrc-list li').eq(i+2).show()
+              $('.lrc-list li').css('color', '#000');
+              $('.lrc-list li:nth-child(' + (i + 1) + ')').css('color', 'red'); //高亮显示当前播放的哪一句歌词    
+            }
+          }
+        }
     }
   </script>
 </body>
