@@ -156,7 +156,7 @@
     function getMusicList() {
       $.ajax({
         type: "GET",
-        url: "http://api.jirengu.com/fm/getChannels.php",
+        url: "https://api.jirengu.com/fm/getChannels.php",
       }).done(function (list) {
         var li = renderListData(JSON.parse(list));//转换为json格式数据
         $(".style").html(li);
@@ -177,7 +177,7 @@
     function getMusic(id) {
       $.ajax({
         type: "GET",
-        url: "http://api.jirengu.com/fm/getSong.php",
+        url: "https://api.jirengu.com/fm/getSong.php",
         data: {
           channel: id
         }
