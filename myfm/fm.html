@@ -78,6 +78,7 @@
     var timer;//音乐进度条定时
     var btnLock = true;//设置音乐按钮锁
     var lrcUrl;//歌词对应地址,
+    var preSongData, nextSongData, nowSongData;
     getMusicList();//获取专辑列表
 
     listBtn.on("click", function (e) {//控制音乐列表
@@ -89,7 +90,6 @@
       $(e.target).addClass("selected");
       var channelId = $(e.target).attr('data-id');
       nowChannelId = channelId;
-      console.log(nowChannelId);
       e.stopPropagation();
       $('.lrc-list').empty();
       getMusic(channelId);
@@ -112,8 +112,17 @@
       }
       btnLock = false;
       $('.lrc-list').empty();//清空歌词
-      getMusic(nowChannelId);
-      playSong();
+      console.log(nextSongData);
+      if (nextSongData) {
+        preSongData = nowSongData;
+        setMusic(nextSongData);
+        playSong();
+        nextSongData = undefined;
+      } else {
+        preSongData = nowSongData;
+        getMusic(nowChannelId);
+        playSong();
+      }
     })
     preBtn.on("click", function () {
       if (!btnLock) {
@@ -121,8 +130,17 @@
       }
       btnLock = false;
       $('.lrc-list').empty();
-      getMusic(nowChannelId);
-      playSong();
+      if (preSongData) {
+        nextSongData = nowSongData;
+        setMusic(preSongData);
+        playSong();
+        preSongData = undefined;
+      } else {
+        nextSongData = nowSongData;
+        getMusic(nowChannelId);
+        playSong();
+
+      }
     })
     progress.on("click", function (e) {
       if ($(e.target).hasClass("time")) {//避免点击播放时间会造成进度跳动
@@ -156,7 +174,8 @@
     music.onended = function () {//歌曲结束后重新获取新歌曲
       $('.lrc-list').empty();
       getMusic(nowChannelId);
-      playSong();     
+      playSong();
+      preSongData = nowSongData;
     }
 
     function getMusicList() {
@@ -192,13 +211,33 @@
         getLrc(lrcUrl);
       });
     }
+    function setMusic(songData) {//回滚上一首或下一首歌曲
+      title.text(songData.title);
+      author.text(songData.author);
+      picture.attr("src", songData.picture);
+      play(songData.url);
+      getLrc(songData.sid);
+      nowSongData = {
+        title:songData.title,
+        author:songData.author,
+        picture:songData.picture,
+        url:songData.url,
+        sid:songData.sid
+      }
+    }
     function renderSongData(data) {
       var newtitle = data.song[0].title;
       var newpicture = data.song[0].picture;
       var newauthor = data.song[0].artist;
       var newurl = data.song[0].url;
-      lrcUrl = data.song[0].sid;
-      console.log(lrcUrl);
+      var newsid = lrcUrl = data.song[0].sid;
+      nowSongData = {
+        title: newtitle,
+        picture: newpicture,
+        author: newauthor,
+        url: newurl,
+        sid: newsid
+      }
       title.text(newtitle);
       author.text(newauthor);
       picture.attr("src", newpicture);
@@ -232,8 +271,8 @@
       $.ajax({
         type: "GET",
         url: 'https://jirenguapi.applinzi.com/fm/getLyric.php',
-        data:{
-          sid:lrcUrl
+        data: {
+          sid: lrcUrl
         }
       }).done(function (ret) {
         renderLrcData(JSON.parse(ret).lyric);
@@ -244,23 +283,23 @@
       var lines = text.split('\n');//将文本分隔成一行一行，存入数组   
       var pattern = /\[\d{2}:\d{2}.\d{2}\]/;////用于匹配时间的正则表达式，匹配的结果类似[xx:xx.xx]    
       var result = [];//保存最终结果的数组
-      var newLines=[];
-      for(var i=0;i<lines.length;i++){
-        if(pattern.test(lines[i])){
+      var newLines = [];
+      for (var i = 0; i < lines.length; i++) {
+        if (pattern.test(lines[i])) {
           newLines.push(lines[i]);
         }
       }//对歌词进行过滤   
-      newLines.shift();  
+      newLines.shift();
       newLines.forEach(function (v /*数组元素值*/, i /*元素索引*/, a /*数组本身*/) {
-      var time = v.match(pattern);  //提取出时间[xx:xx.xx]  
-      var value = v.replace(pattern, '');  //提取歌词   
-      
-      //因为一行里面可能有多个时间，所以time有可能是[xx:xx.xx][xx:xx.xx][xx:xx.xx]的形式，需要进一步分隔    
-      time.forEach(function (v1, i1, a1) {
+        var time = v.match(pattern);  //提取出时间[xx:xx.xx]  
+        var value = v.replace(pattern, '');  //提取歌词   
+
+        //因为一行里面可能有多个时间，所以time有可能是[xx:xx.xx][xx:xx.xx][xx:xx.xx]的形式，需要进一步分隔    
+        time.forEach(function (v1, i1, a1) {
           //去掉时间里的中括号得到xx:xx.xx    
-        var t = v1.slice(1, -1).split(':');
+          var t = v1.slice(1, -1).split(':');
           //将结果压入最终数组    
-        result.push([parseInt(t[0], 10) * 60 + parseFloat(t[1]), value]);
+          result.push([parseInt(t[0], 10) * 60 + parseFloat(t[1]), value]);
         });
       });
       //最后将结果数组中的元素按时间大小排序，以便保存之后正常显示歌词    
@@ -269,24 +308,24 @@
       });
       showLrcData(result);//展示歌词
     }
-    function showLrcData(arr){
-        for (var i = 0, li; i < arr.length; i++) {
-          li = $('<li>' + arr[i][1] + '</li>');
-          $('.lrc-list').append(li);
-          $('.lrc-list li').hide();
-        }
-        music.ontimeupdate = function () {//视屏 音频当前的播放位置发生改变时触发    
-          for (var i = 0, l = arr.length; i < l; i++) {
-            if (this.currentTime /*当前播放的时间*/ > arr[i][0]) { //显示到页面    
-              $('.lrc-list li').hide();
-              $('.lrc-list li').eq(i).show()
-              $('.lrc-list li').eq(i+1).show()
-              $('.lrc-list li').eq(i+2).show()
-              $('.lrc-list li').css('color', '#000');
-              $('.lrc-list li:nth-child(' + (i + 1) + ')').css('color', 'red'); //高亮显示当前播放的哪一句歌词    
-            }
+    function showLrcData(arr) {
+      for (var i = 0, li; i < arr.length; i++) {
+        li = $('<li>' + arr[i][1] + '</li>');
+        $('.lrc-list').append(li);
+        $('.lrc-list li').hide();
+      }
+      music.ontimeupdate = function () {//视屏 音频当前的播放位置发生改变时触发    
+        for (var i = 0, l = arr.length; i < l; i++) {
+          if (this.currentTime /*当前播放的时间*/ > arr[i][0]) { //显示到页面    
+            $('.lrc-list li').hide();
+            $('.lrc-list li').eq(i).show()
+            $('.lrc-list li').eq(i + 1).show()
+            $('.lrc-list li').eq(i + 2).show()
+            $('.lrc-list li').css('color', '#000');
+            $('.lrc-list li:nth-child(' + (i + 1) + ')').css('color', 'red'); //高亮显示当前播放的哪一句歌词    
           }
         }
+      }
     }
   </script>
 </body>
